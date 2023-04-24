@@ -46,19 +46,25 @@ def get_urls():
         for url in urls:
             domain = tldextract.extract(url).domain
             if domain not in url_counts:
-                url_counts[domain] = {"count": 1, "total_count": 1}
+                url_counts[domain] = [1, url]
             else:
-                url_counts[domain]["count"] += 1
-            url_counts[domain]["total_count"] += 1
+                url_counts[domain][0] += 1
 
     # close the database connection
     conn.close()
 
     # convert the dictionary to a list of tuples, sorted by count
-    urls = [(k + " (" + str(v["count"]) + "/" + str(v["total_count"]) + ")", v["count"]) for k, v in url_counts.items()]
-    urls = sorted(urls, key=lambda x: x[1], reverse=True)
+    urls = sorted([(k, v[0], v[1]) for k, v in url_counts.items()], key=lambda x: x[1], reverse=True)
 
-    return urls
+    # format the urls list to include the url counts and total counts
+    formatted_urls = []
+    total_count = sum([v[0] for v in url_counts.values()])
+    for url in urls:
+        count = url[1]
+        total = total_count
+        formatted_urls.append((f"{url[2]} ({count}/{total})", count))
+
+    return formatted_urls
 
 
 
