@@ -1,34 +1,106 @@
-from flask import Flask, render_template
 import sqlite3
 import re
+from flask import Flask, render_template
 
-
+# create a Flask instance
 app = Flask(__name__)
 
-@app.route("/")
+# define routes for each webpage
+@app.route('/')
 def index():
-    # Connect to the database
+    urls = get_urls()
+    return render_template('index.html', urls=urls)
+
+@app.route('/attachments')
+def attachments():
+    attachments = get_attachments()
+    return render_template('attachments.html', attachments=attachments)
+
+@app.route('/messages')
+def messages():
+    messages = get_messages()
+    return render_template('messages.html', messages=messages)
+
+# function to get all URLs from the content field
+def get_urls():
+    # connect to database
     conn = sqlite3.connect('messages.db')
     c = conn.cursor()
 
-    # Fetch all messages from the database
-    c.execute("SELECT * FROM messages")
-    messages = c.fetchall()
+    # query for selecting content field
+    query = "SELECT content FROM messages"
 
-    # Create a list of all URLs mentioned in messages
+    # execute the query and fetch all rows
+    c.execute(query)
+    rows = c.fetchall()
+
+    # initialize a list to store URLs
     urls = []
-    for message in messages:
-        urls += re.findall(r'(https?://[^\s]+)', message[1])  # URL is in the second column
 
-    # Create a list of all attachments that contain URLs
+    # iterate over rows and extract URLs from content field
+    for row in rows:
+        content = row[0]
+        urls += re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', content)
+
+    # close the database connection
+    conn.close()
+
+    return urls
+
+# function to get all attachments from the content field
+def get_attachments():
+    # connect to database
+    conn = sqlite3.connect('messages.db')
+    c = conn.cursor()
+
+    # query for selecting content field
+    query = "SELECT content FROM messages"
+
+    # execute the query and fetch all rows
+    c.execute(query)
+    rows = c.fetchall()
+
+    # initialize a list to store attachments
     attachments = []
-    for message in messages:
-        if message[2]:  # Check if there is an attachment
-            if re.search(r'(https?://[^\s]+)', message[2]):  # Check if there is a URL in the attachment
-                attachments.append(message[2])
 
-    # Render the template with the URLs and attachments
-    return render_template('index.html', urls=urls, attachments=attachments)
+    # iterate over rows and extract attachments from content field
+    for row in rows:
+        content = row[0]
+        if content.startswith('Attachment:'):
+            attachments.append(content)
 
-if __name__ == "__main__":
+    # close the database connection
+    conn.close()
+
+    return attachments
+
+# function to get all non-url comments and messages
+def get_messages():
+    # connect to database
+    conn = sqlite3.connect('messages.db')
+    c = conn.cursor()
+
+    # query for selecting content field
+    query = "SELECT content FROM messages"
+
+    # execute the query and fetch all rows
+    c.execute(query)
+    rows = c.fetchall()
+
+    # initialize a list to store messages
+    messages = []
+
+    # iterate over rows and extract messages from content field
+    for row in rows:
+        content = row[0]
+        if not (content.startswith('http') or content.startswith('Attachment:')):
+            messages.append(content)
+
+    # close the database connection
+    conn.close()
+
+    return messages
+
+# run the Flask app
+if __name__ == '__main__':
     app.run(debug=True)

@@ -1,22 +1,14 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Message URLs</title>
-  </head>
-  <body>
-    <h1>Message URLs</h1>
+<head>
+    <title>URLs</title>
+</head>
+<body>
+    <h1>All URLs</h1>
     <ul>
-      {% for message in messages %}
-        <li>{{ message['content'] }}</li>
-        {% if message['attachments'] %}
-          <ul>
-            {% for attachment in message['attachments'] %}
-              <li>{{ attachment }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-      {% endfor %}
+        {% for url in urls %}
+            <li><a href="{{ url }}">{{ url }}</a></li>
+        {% endfor %}
     </ul>
-  </body>
+</body>
 </html>
