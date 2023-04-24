@@ -1,7 +1,7 @@
 import sqlite3
-from urllib.parse import urlparse
 import random
 import re
+from urllib.parse import urlparse
 
 from flask import Flask, render_template
 
@@ -28,17 +28,44 @@ def get_urls():
         if domain not in urls_dict:
             urls_dict[domain] = []
         urls_dict[domain].append(url)
-    # randomize the order of domains
-    domains = list(urls_dict.keys())
-    random.shuffle(domains)
-    urls_dict = {domain: urls_dict[domain] for domain in domains}
-    return urls_dict
 
+    # Randomize the domains and URLs
+    randomized_domains = list(urls_dict.keys())
+    random.shuffle(randomized_domains)
+    randomized_urls_dict = {}
+    for domain in randomized_domains:
+        urls = urls_dict[domain]
+        random.shuffle(urls)
+        randomized_urls_dict[domain] = urls
+
+    # Limit to 50 URLs
+    for domain in randomized_urls_dict:
+        randomized_urls_dict[domain] = randomized_urls_dict[domain][:50]
+
+    return randomized_urls_dict
+
+def get_youtube_video_url():
+    conn = sqlite3.connect('messages.db')
+    c = conn.cursor()
+    c.execute("SELECT content FROM messages WHERE content LIKE 'https://www.youtube.com/watch?v=%'")
+    rows = c.fetchall()
+    conn.close()
+    if not rows:
+        return None
+    video_id = random.choice(rows)[0]
+    return f"https://www.youtube.com/embed/{video_id.split('=')[-1]}"
+
+def get_random_comments():
+    conn = sqlite3.connect('messages.db')
+    cursor = conn.execute("SELECT content FROM messages WHERE content NOT LIKE 'http%' ORDER BY RANDOM() LIMIT 10")
+    messages = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return messages
 
 @app.route('/')
 def index():
-    yt_url = get_youtube_video_url()
     messages = get_random_comments()
+    yt_url = get_youtube_video_url()
     urls_dict = get_urls()
     return render_template('index.html', messages=messages, urls_dict=urls_dict, yt_url=yt_url)
 
@@ -56,25 +83,7 @@ def urls():
 def yt():
     return render_template('yt.html', yt_url=get_youtube_video_url())
 
-def get_random_comments():
-    conn = sqlite3.connect('messages.db')
-    cursor = conn.execute("SELECT content FROM messages WHERE content NOT LIKE 'http%' ORDER BY RANDOM() LIMIT 10")
-    messages = [row[0] for row in cursor.fetchall()]
-    conn.close()
-    return messages
-
-def get_youtube_video_url():
-    conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
-    c.execute("SELECT content FROM messages WHERE content LIKE 'https://youtu.be/%'")
-    rows = c.fetchall()
-    conn.close()
-    if not rows:
-        return None
-    video_id = random.choice(rows)[0]
-    return f"https://www.youtube.com/embed/{video_id.split('/')[-1]}"
-
-# inserting pre video requirements
+# Jinja2 filter for splitting a string into a list using a delimiter
 def split_filter(s="", delimiter=","):
     if s:
         return s.split(delimiter)
@@ -83,6 +92,5 @@ def split_filter(s="", delimiter=","):
 
 app.jinja_env.filters['split'] = split_filter
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=80)

@@ -1,26 +1,59 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Discord Messages</title>
-</head>
-<body>
-    {% include 'yt.html' %}
-    <hr>
-    <h1>Discord Messages</h1>
-    <ul>
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    <hr>
-    <h1>Links</h1>
-    {% for domain, urls in urls_dict.items() %}
-        <h2>{{ domain }}</h2>
-        <ul>
-            {% for url in urls %}
-                <li><a href="{{ url }}">{{ url }}</a></li>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <form method="POST" action="{{ url_for('split') }}">
+                <div class="form-group">
+                    <label for="urls">Enter URLs:</label>
+                    <textarea class="form-control" id="urls" name="urls" rows="10" placeholder="Enter URLs here"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Split URLs</button>
+                </div>
+            </form>
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message[1] }}">{{ message[0] }}</div>
             {% endfor %}
-        </ul>
-    {% endfor %}
-</body>
-</html>
+            {% endif %}
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">YouTube Video</h5>
+                </div>
+                <div class="card-body">
+                    {% if yt_url %}
+                    <div class="embed-responsive embed-responsive-16by9 mb-3">
+                        <iframe class="embed-responsive-item" src="{{ yt_url }}"></iframe>
+                    </div>
+                    {% else %}
+                    <p>No YouTube video selected</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="card-title">Split URLs</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for domain, urls in urls_dict.items() %}
+                        <li class="list-group-item">
+                            <h6>{{ domain }}</h6>
+                            <ul>
+                                {% for url in urls %}
+                                <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

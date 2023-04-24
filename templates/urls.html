@@ -1,11 +1,58 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>URLs</title>
-</head>
-<body>
-    {% for domain, url in urls_dict.items() %}
-        <p>{{ domain }}: <a href="{{ url }}" target="_blank">{{ url }}</a></p>
-    {% endfor %}
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="mt-4">URLs</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <form action="/" method="POST">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Enter YouTube URL" aria-label="Enter YouTube URL" aria-describedby="button-addon2" name="url" required>
+          <button class="btn btn-primary" type="submit" id="button-addon2">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {% if yt_url %}
+    <div class="row">
+      <div class="col-lg-12">
+        <h3>YouTube URL:</h3>
+        <p>{{ yt_url }}</p>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if messages %}
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="alert alert-danger" role="alert">
+          {% for message in messages %}
+            {{ message }}<br>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if urls_dict %}
+    <div class="row">
+      <div class="col-lg-12">
+        <h3>Domains:</h3>
+        <ul>
+          {% for domain, urls in urls_dict.items()|slice(0,50) %}
+            <li>{{ domain }}: {{ urls|length }} URLs</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}
