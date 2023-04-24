@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Embedded Youtube Videos</title>
+    <title>Embedded Youtube Video</title>
 </head>
 <body>
-    {% set video_id = get_youtube_videos()|default("") %}
-    {% if video_id %}
-        {% set split = video_id|split("/") %}
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ split[-1] }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    {% endif %}
+{% if yt_url %}
+    <iframe width="560" height="315" src="{{ yt_url }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+{% endif %}
 </body>
 </html>

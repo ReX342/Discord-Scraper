@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Discord Scraper</title>
-  </head>
-  <body>
-    <h1>Discord Scraper</h1>
-    <h2>Overview</h2>
+<head>
+	<title>Discord Messages</title>
+</head>
+<body>
+    {% include 'yt.html' %}
+    <hr>
+    <h1>Discord Messages</h1>
     <ul>
-      <li><a href="{{ url_for('urls') }}">URLs</a></li>
-      <li><a href="{{ url_for('yt') }}">YouTube Videos</a></li>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
     </ul>
-    <h2>Messages</h2>
-    <ul>
-      {% for message in messages %}
-      <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  </body>
+    <hr>
+    <h1>Links</h1>
+    {% for domain, urls in urls_dict.items() %}
+        <h2>{{ domain }}</h2>
+        <ul>
+            {% for url in urls %}
+                <li><a href="{{ url }}">{{ url }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</body>
 </html>
