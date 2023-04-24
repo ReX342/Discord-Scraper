@@ -6,9 +6,9 @@
 <body>
     <h1>All URLs</h1>
     <ul>
-        {% for url in urls %}
-            <li><a href="{{ url }}">{{ url }}</a></li>
-        {% endfor %}
+      {% for url, count in urls %}
+        <li>{{ url }} ({{ count }})</li>
+      {% endfor %}    
     </ul>
 </body>
 </html>

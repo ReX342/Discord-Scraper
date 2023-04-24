@@ -1,6 +1,8 @@
 import sqlite3
 import re
 from flask import Flask, render_template
+import tldextract
+
 
 # create a Flask instance
 app = Flask(__name__)
@@ -8,8 +10,8 @@ app = Flask(__name__)
 # define routes for each webpage
 @app.route('/')
 def index():
-    urls, url_counts = get_urls()
-    return render_template('index.html', urls=urls, url_counts=url_counts)
+    urls = get_urls()
+    return render_template('index.html', urls=urls)
 
 @app.route('/attachments')
 def attachments():
@@ -34,25 +36,31 @@ def get_urls():
     c.execute(query)
     rows = c.fetchall()
 
-    # initialize a list to store URLs and a dictionary to store URL counts
-    urls = []
+    # initialize a dictionary to store URLs and their counts
     url_counts = {}
 
     # iterate over rows and extract URLs from content field
     for row in rows:
         content = row[0]
-        urls_in_content = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', content)
-        for url in urls_in_content:
-            urls.append(url)
-            if url in url_counts:
-                url_counts[url] += 1
+        urls = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', content)
+        for url in urls:
+            domain = tldextract.extract(url).domain
+            if domain not in url_counts:
+                url_counts[domain] = {"count": 1, "total_count": 1}
             else:
-                url_counts[url] = 1
+                url_counts[domain]["count"] += 1
+            url_counts[domain]["total_count"] += 1
 
     # close the database connection
     conn.close()
 
-    return urls, url_counts
+    # convert the dictionary to a list of tuples, sorted by count
+    urls = [(k + " (" + str(v["count"]) + "/" + str(v["total_count"]) + ")", v["count"]) for k, v in url_counts.items()]
+    urls = sorted(urls, key=lambda x: x[1], reverse=True)
+
+    return urls
+
+
 
 # function to get all attachments from the content field
 def get_attachments():
