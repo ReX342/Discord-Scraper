@@ -49,6 +49,7 @@ def urls():
 # route to display embedded Youtube videos
 @app.route('/yt')
 def yt():
+    urls = []
     # connect to database
     conn = sqlite3.connect('messages.db')
     cursor = conn.execute("SELECT content FROM messages WHERE content LIKE 'https://youtu.be/%'")
@@ -58,46 +59,49 @@ def yt():
     return render_template('yt.html', urls=urls)
 
 
-#inserting pre video requirements
+# inserting pre video requirements
 def split_filter(s="", delimiter=","):
     if s:
         return s.split(delimiter)
     else:
         return ""
 
-
+# add the split_filter function to the Jinja environment
 app.jinja_env.filters['split'] = split_filter
 
+# add the get_youtube_videos function to the global Jinja context
+@app.context_processor
+def youtube_videos():
+    def get_youtube_videos():
+        # connect to database
+        conn = sqlite3.connect('messages.db')
+        c = conn.cursor()
 
-def get_youtube_videos():
-    # connect to database
-    conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
+        # query for selecting content field
+        query = "SELECT content FROM messages"
 
-    # query for selecting content field
-    query = "SELECT content FROM messages"
+        # execute the query and fetch all rows
+        c.execute(query)
+        rows = c.fetchall()
 
-    # execute the query and fetch all rows
-    c.execute(query)
-    rows = c.fetchall()
+        # initialize a list to store youtube urls
+        youtube_urls = []
 
-    # initialize a list to store youtube urls
-    youtube_urls = []
+        # iterate over rows and extract youtube urls from content field
+        for row in rows:
+            content = row[0]
+            urls = re.findall('https?://(?:www\.)?youtu(?:\.be|be\.com)/(?:watch\?v=|embed/|v/|u/\w+/)?([\w-]{11})', content)
+            youtube_urls.extend(urls)
 
-    # iterate over rows and extract youtube urls from content field
-    for row in rows:
-        content = row[0]
-        urls = re.findall('https?://(?:www\.)?youtu(?:\.be|be\.com)/(?:watch\?v=|embed/|v/|u/\w+/)?([\w-]{11})', content)
-        youtube_urls.extend(urls)
+        # select one random url from the youtube urls list
+        if youtube_urls:
+            url = random.choice(youtube_urls)
+        else:
+            url = None
 
-    # select one random url from the youtube urls list
-    if youtube_urls:
-        url = random.choice(youtube_urls)
-    else:
-        url = None
+        return url
 
-    return url
-
+    return dict(get_youtube_videos=get_youtube_videos)
 
 
 if __name__ == '__main__':
