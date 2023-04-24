@@ -1,10 +1,20 @@
-{% extends 'base.html' %}
-
-{% block content %}
-  <h1>URLs</h1>
-  <ul>
-    {% for url, count in urls %}
-      <li><code>{{ url }} ({{ count }}/{{ url_counts[url] }})</code></li>
-    {% endfor %}
-  </ul>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Discord Scraper</title>
+  </head>
+  <body>
+    <h1>Discord Scraper</h1>
+    <h2>Overview</h2>
+    <ul>
+      <li><a href="{{ url_for('urls') }}">URLs</a></li>
+      <li><a href="{{ url_for('yt') }}">YouTube Videos</a></li>
+    </ul>
+    <h2>Messages</h2>
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

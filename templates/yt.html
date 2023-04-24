@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Embedded Youtube Videos</title>
+</head>
+<body>
+	{% for url in urls %}
+		{% if "youtu.be" in url %}
+			{% set video_id = url.split("/")|last %}
+			<iframe width="560" height="315" src="https://www.youtube.com/embed/{{ video_id }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+		{% endif %}
+	{% endfor %}
+</body>
+</html>
