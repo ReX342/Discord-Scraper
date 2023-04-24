@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>URLs</title>
-</head>
-<body>
-    <h1>All URLs</h1>
-    <ul>
-      {% for url, count in urls %}
-        <li>{{ url }} ({{ count }})</li>
-      {% endfor %}    
-    </ul>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>URLs</h1>
+  <ul>
+    {% for url, count in urls %}
+      <li><code>{{ url }} ({{ count }}/{{ url_counts[url] }})</code></li>
+    {% endfor %}
+  </ul>
+{% endblock %}

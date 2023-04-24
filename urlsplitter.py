@@ -1,127 +1,82 @@
+from flask import Flask, render_template
 import sqlite3
 import re
-from flask import Flask, render_template
 import tldextract
+import sqlite3
 
+conn = sqlite3.connect('messages.db')
 
-# create a Flask instance
 app = Flask(__name__)
 
-# define routes for each webpage
 @app.route('/')
 def index():
-    urls = get_urls()
-    return render_template('index.html', urls=urls)
+    return render_template('index.html')
 
-@app.route('/attachments')
-def attachments():
-    attachments = get_attachments()
-    return render_template('attachments.html', attachments=attachments)
-
-@app.route('/messages')
-def messages():
-    messages = get_messages()
-    return render_template('messages.html', messages=messages)
-
-# function to get all URLs from the content field
-def get_urls():
+# function to get all non-URL comments
+def get_comments():
     # connect to database
-    conn = sqlite3.connect('messages.db')
     c = conn.cursor()
 
-    # query for selecting content field
-    query = "SELECT content FROM messages"
+    # query for selecting content field where no URLs are present
+    query = "SELECT content FROM messages WHERE content NOT LIKE 'URL%'"
 
     # execute the query and fetch all rows
     c.execute(query)
     rows = c.fetchall()
 
-    # initialize a dictionary to store URLs and their counts
-    url_counts = {}
+    # initialize a list to store all comments
+    comments = []
+
+    # iterate over rows and append comments to the list
+    for row in rows:
+        comments.append(row[0])
+
+    return comments
+
+# function to get all messages that start with 'http' and sort them by domain and path
+def get_urls():
+    # connect to database
+    c = conn.cursor()
+
+    # query for selecting content field where URLs are present
+    query = "SELECT content FROM messages WHERE content LIKE 'http%'"
+
+    # execute the query and fetch all rows
+    c.execute(query)
+    rows = c.fetchall()
+
+    # initialize a dictionary to store URLs sorted by domain and path
+    urls_dict = {}
 
     # iterate over rows and extract URLs from content field
     for row in rows:
         content = row[0]
-        urls = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', content)
-        for url in urls:
-            domain = tldextract.extract(url).domain
-            if domain not in url_counts:
-                url_counts[domain] = [1, url]
-            else:
-                url_counts[domain][0] += 1
+        url = re.findall('(https?://[^\s]+)', content)[0]
+        domain = tldextract.extract(url).registered_domain
+        path = url.replace('https://' + domain, '')
+        if domain not in urls_dict:
+            urls_dict[domain] = {}
+        if path not in urls_dict[domain]:
+            urls_dict[domain][path] = []
+        urls_dict[domain][path].append(url)
 
-    # close the database connection
-    conn.close()
+    return urls_dict
 
-    # convert the dictionary to a list of tuples, sorted by count
-    urls = sorted([(k, v[0], v[1]) for k, v in url_counts.items()], key=lambda x: x[1], reverse=True)
+# route to display all non-URL comments
+@app.route('/comments')
+def comments():
+    query = "SELECT content FROM messages WHERE content NOT LIKE 'http%'"
+    cursor = conn.execute(query)
+    messages = [row[0] for row in cursor.fetchall()]
+    return render_template('comments.html', messages=messages)
 
-    # format the urls list to include the url counts and total counts
-    formatted_urls = []
-    total_count = sum([v[0] for v in url_counts.values()])
-    for url in urls:
-        count = url[1]
-        total = total_count
-        formatted_urls.append((f"{url[2]} ({count}/{total})", count))
+# route to display all URLs sorted by domain and path
+@app.route('/urls')
+def urls():
+    query = "SELECT content FROM messages WHERE content LIKE 'http%'"
+    cursor = conn.execute(query)
+    urls = [row[0] for row in cursor.fetchall()]
+    return render_template('urls.html', urls=urls)
 
-    return formatted_urls
-
-
-
-# function to get all attachments from the content field
-def get_attachments():
-    # connect to database
-    conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
-
-    # query for selecting content field
-    query = "SELECT content FROM messages"
-
-    # execute the query and fetch all rows
-    c.execute(query)
-    rows = c.fetchall()
-
-    # initialize a list to store attachments
-    attachments = []
-
-    # iterate over rows and extract attachments from content field
-    for row in rows:
-        content = row[0]
-        if content.startswith('Attachment:'):
-            attachments.append(content)
-
-    # close the database connection
-    conn.close()
-
-    return attachments
-
-# function to get all non-url comments and messages
-def get_messages():
-    # connect to database
-    conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
-
-    # query for selecting content field
-    query = "SELECT content FROM messages"
-
-    # execute the query and fetch all rows
-    c.execute(query)
-    rows = c.fetchall()
-
-    # initialize a list to store messages
-    messages = []
-
-    # iterate over rows and extract messages from content field
-    for row in rows:
-        content = row[0]
-        if not (content.startswith('http') or content.startswith('Attachment:')):
-            messages.append(content)
-
-    # close the database connection
-    conn.close()
-
-    return messages
-
-# run the Flask app
 if __name__ == '__main__':
     app.run(debug=True)
