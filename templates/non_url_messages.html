@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Messages without URL</title>
+</head>
+<body>
+  <h1>Messages without URL</h1>
+  {% if messages %}
+    <ul>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>No messages found.</p>
+  {% endif %}
+</body>
+</html>

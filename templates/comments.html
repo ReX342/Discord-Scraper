@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Comments{% endblock %}
+
+{% block content %}
+  <h1>Comments</h1>
+  <ul>
+    {% for message in messages %}
+      {% if message.content.find('http') == -1 %}
+        <li>{{ message.content }}</li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% endblock %}
