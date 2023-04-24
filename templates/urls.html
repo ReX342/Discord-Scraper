@@ -1,19 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>URLs</title>
-  </head>
-  <body>
-    <h1>URLs</h1>
-    <ul>
-      {% for domain, urls in urls_dict.items() %}
-        <h3>{{ domain }}</h3>
-        <ul>
-          {% for url in urls %}
-            <li><a href="{{ url }}">{{ url }}</a></li>
-          {% endfor %}
-        </ul>
-      {% endfor %}
-    </ul>
-  </body>
+</head>
+<body>
+    {% for domain, url in urls_dict.items() %}
+        <p>{{ domain }}: <a href="{{ url }}" target="_blank">{{ url }}</a></p>
+    {% endfor %}
+</body>
 </html>

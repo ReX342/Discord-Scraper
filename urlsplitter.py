@@ -2,6 +2,7 @@ import sqlite3
 from urllib.parse import urlparse
 import random
 import re
+from random import sample
 
 from flask import Flask, render_template
 
@@ -28,13 +29,19 @@ def get_urls():
         if domain not in urls_dict:
             urls_dict[domain] = []
         urls_dict[domain].append(url)
+    
+    # randomly select one URL from each domain
+    for domain in urls_dict:
+        urls_dict[domain] = random.choice(urls_dict[domain])
+    
     return urls_dict
 
 @app.route('/')
 def index():
     messages = get_comments()
+    random_messages = sample(messages, 10)  # Get 10 random messages
     urls_dict = get_urls()
-    return render_template('index.html', messages=messages, urls_dict=urls_dict)
+    return render_template('index.html', messages=random_messages, urls_dict=urls_dict)
 
 @app.route('/comments')
 def comments():
