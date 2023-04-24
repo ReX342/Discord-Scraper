@@ -1,5 +1,7 @@
 import sqlite3
 from urllib.parse import urlparse
+import random
+import re
 
 from flask import Flask, render_template
 
@@ -54,6 +56,49 @@ def yt():
     # close the database connection
     conn.close()
     return render_template('yt.html', urls=urls)
+
+
+#inserting pre video requirements
+def split_filter(s="", delimiter=","):
+    if s:
+        return s.split(delimiter)
+    else:
+        return ""
+
+
+app.jinja_env.filters['split'] = split_filter
+
+
+def get_youtube_videos():
+    # connect to database
+    conn = sqlite3.connect('messages.db')
+    c = conn.cursor()
+
+    # query for selecting content field
+    query = "SELECT content FROM messages"
+
+    # execute the query and fetch all rows
+    c.execute(query)
+    rows = c.fetchall()
+
+    # initialize a list to store youtube urls
+    youtube_urls = []
+
+    # iterate over rows and extract youtube urls from content field
+    for row in rows:
+        content = row[0]
+        urls = re.findall('https?://(?:www\.)?youtu(?:\.be|be\.com)/(?:watch\?v=|embed/|v/|u/\w+/)?([\w-]{11})', content)
+        youtube_urls.extend(urls)
+
+    # select one random url from the youtube urls list
+    if youtube_urls:
+        url = random.choice(youtube_urls)
+    else:
+        url = None
+
+    return url
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
