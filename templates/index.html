@@ -1,11 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Discord Messages</title>
+    <title>Discord Messages</title>
 </head>
+
 <body>
-    {% include 'yt.html' %}
-    <hr>
+    <div id="countdown"></div>
+
+    <script>
+        function startCountdown() {
+            var seconds = 60;
+            var countdownElement = document.getElementById("countdown");
+            var countdownInterval = setInterval(function() {
+                countdownElement.innerHTML = "Time left: " + seconds;
+                seconds -= 1;
+                if (seconds < 0) {
+                    clearInterval(countdownInterval);
+                    location.reload();
+                }
+            }, 1000);
+        }
+
+        startCountdown();
+    </script>
+    
+    <iframe width="560" height="315" src="{{ yt_url }}" frameborder="0" allowfullscreen></iframe>
+
     <h1>Discord Messages</h1>
     <ul>
         {% for message in messages %}
