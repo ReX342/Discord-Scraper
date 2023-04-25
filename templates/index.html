@@ -2,17 +2,31 @@
 <html>
 <head>
     <title>Discord Messages</title>
+    <style>
+        #countdown {
+            font-size: 36px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="countdown"></div>
+    <h1>Discord Messages</h1>
+
+    <h2>Countdown</h2>
+    <div id="countdown">
+        <span id="countdown-title">Time left:</span>
+        <span id="countdown-time">{{ remaining_time }}</span>
+    </div>
+    
 
     <script>
         function startCountdown() {
             var seconds = 60;
             var countdownElement = document.getElementById("countdown");
             var countdownInterval = setInterval(function() {
-                countdownElement.innerHTML = "Time left: " + seconds;
+                countdownElement.innerHTML = "<span id='countdown-title'>Time left: </span>" + seconds;
                 seconds -= 1;
                 if (seconds < 0) {
                     clearInterval(countdownInterval);
@@ -23,19 +37,19 @@
 
         startCountdown();
     </script>
-    
-    <iframe width="560" height="315" src="{{ yt_url }}" frameborder="0" allowfullscreen></iframe>
 
-    <h1>Discord Messages</h1>
+    <hr>
+    <h2>Messages</h2>
     <ul>
         {% for message in messages %}
             <li>{{ message }}</li>
         {% endfor %}
     </ul>
+
     <hr>
-    <h1>Links</h1>
+    <h2>Links</h2>
     {% for domain, urls in urls_dict.items() %}
-        <h2>{{ domain }}</h2>
+        <h3>{{ domain }}</h3>
         <ul>
             {% for url in urls %}
                 <li><a href="{{ url }}">{{ url }}</a></li>

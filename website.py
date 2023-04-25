@@ -46,7 +46,9 @@ def index():
     yt_url = get_youtube_video_url()
     messages = get_random_comments()
     urls_dict = get_urls()
-    return render_template('index.html', messages=messages, urls_dict=urls_dict, yt_url=yt_url)
+    # Get remaining time from countdown function
+    remaining_time = countdown()
+    return render_template('index.html', messages=messages, urls_dict=urls_dict, yt_url=yt_url, remaining_time=remaining_time)
 
 # Route for comments page
 @app.route('/comments')
