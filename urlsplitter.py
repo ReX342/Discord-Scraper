@@ -4,7 +4,7 @@ import random
 import re
 
 from flask import Flask, render_template
-
+#Everything is in this one file: Run this to get the website running
 app = Flask(__name__)
 
 def get_comments():

@@ -2,7 +2,7 @@ import requests
 import json
 import sqlite3
 from tqdm import tqdm
-
+#Don't run This file!
 def create_table():
     conn = sqlite3.connect('messages.db')
     c = conn.cursor()
