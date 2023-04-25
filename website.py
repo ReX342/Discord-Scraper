@@ -4,6 +4,20 @@ import threading
 import random
 import sqlite3
 from urllib.parse import urlparse
+from functools import wraps
+import time
+
+
+def timeit(func):
+    @wraps(func)
+    def timeit_wrapper(*args, **kwargs):
+        start_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        total_time = end_time - start_time
+        print(f'Function {func.__name__}{args} {kwargs} Took {total_time:.4f} seconds')
+        return result
+    return timeit_wrapper
 
 app = Flask(__name__)
 
@@ -18,7 +32,7 @@ def get_comments():
 # Function to get URLs from database
 def get_urls():
     conn = sqlite3.connect('messages.db')
-    cursor = conn.execute("SELECT content FROM messages WHERE content LIKE 'http%'")
+    cursor = conn.execute("SELECT content FROM messages WHERE content LIKE 'http%' ORDER BY RANDOM() LIMIT 500")
     urls = [row[0] for row in cursor.fetchall()]
     conn.close()
     urls_dict = {}
@@ -47,7 +61,8 @@ def index():
     messages = get_random_comments()
     urls_dict = get_urls()
     # Get remaining time from countdown function
-    remaining_time = countdown()
+    #remaining_time = countdown()
+    remaining_time = 60
     return render_template('index.html', messages=messages, urls_dict=urls_dict, yt_url=yt_url, remaining_time=remaining_time)
 
 # Route for comments page
