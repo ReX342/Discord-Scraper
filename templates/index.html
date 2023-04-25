@@ -45,7 +45,10 @@
             <li>{{ message }}</li>
         {% endfor %}
     </ul>
-
+    {% if yt_url %}
+    <hr>
+    <iframe width="560" height="315" src="{{ yt_url }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    {% endif %}
     <hr>
     <h2>Links</h2>
     {% for domain, urls in urls_dict.items() %}
