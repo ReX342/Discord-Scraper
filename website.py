@@ -6,7 +6,26 @@ import sqlite3
 from urllib.parse import urlparse
 from functools import wraps
 import time
+from PIL import Image
+import requests
+import io
 
+app = Flask(__name__)
+
+#trying this out:
+@app.route('/pictures')
+def pictures():
+    conn = sqlite3.connect('tf.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM attachments ORDER BY RANDOM() LIMIT 20')
+    attachments = c.fetchall()
+    conn.close()
+    return render_template('pictures.html', attachments=attachments)
+
+# Loop through the attachments and download each image
+def download_image(url):
+    response = requests.get(url)
+    return Image.open(io.BytesIO(response.content))
 
 def timeit(func):
     @wraps(func)
@@ -19,7 +38,6 @@ def timeit(func):
         return result
     return timeit_wrapper
 
-app = Flask(__name__)
 
 # Function to get comments from database
 def get_comments():

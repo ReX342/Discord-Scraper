@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attachments</title>
+</head>
+<body>    
+    {% for attachment in attachments %}
+    <img src="{{ attachment[2] }}" alt="{{ attachment[1] }}">
+    {% endfor %}
+</body>
+</html>
