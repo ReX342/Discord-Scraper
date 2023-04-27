@@ -13,17 +13,25 @@ def create_table():
          content TEXT,
          timestamp TEXT)
     ''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS dreams
+        (id TEXT PRIMARY KEY,
+         author TEXT,
+         content TEXT,
+         timestamp TEXT)
+    ''')
     conn.commit()
     conn.close()
 
-def retrieve_messages(channelid):
+
+def retrieve_dreams(channelid):
     headers = {
-        'authorization': 'https://youtu.be/xh28F6f-Cds'
+        'authorization': 'watchthevideo'
     }
-    messages = []
+    dreams = []
     before = None
-    total_messages = 0
-    with tqdm(total=1000, desc='Retrieving messages') as pbar1:
+    total_dreams = 0
+    with tqdm(total=1000, desc='Retrieving dreams') as pbar1:
         while True:
             url = f'https://discord.com/api/v9/channels/{channelid}/messages'
             if before:
@@ -32,40 +40,40 @@ def retrieve_messages(channelid):
             jsonn = json.loads(r.text)
             if not jsonn:
                 break
-            messages += jsonn
+            dreams += jsonn
             before = jsonn[-1]['id']
-            total_messages += len(jsonn)
-            if total_messages % 1000 == 0:
+            total_dreams += len(jsonn)
+            if total_dreams % 1000 == 0:
                 pbar1.update(1000)
-                with tqdm(total=total_messages, desc='Inserting into database') as pbar2:
+                with tqdm(total=total_dreams, desc='Inserting into database') as pbar2:
                     conn = sqlite3.connect('messages.db')
                     c = conn.cursor()
-                    for value in messages:
+                    for value in dreams:
                         id = value['id']
                         author = value['author']['username']
                         content = value['content']
                         timestamp = value['timestamp']
-                        c.execute('INSERT OR IGNORE INTO messages VALUES (?, ?, ?, ?)', (id, author, content, timestamp))
+                        c.execute('INSERT OR IGNORE INTO dreams VALUES (?, ?, ?, ?)', (id, author, content, timestamp))
                         pbar2.update(1)
                     conn.commit()
                     conn.close()
-                    messages = []
+                    dreams = []
             else:
                 pbar1.update(len(jsonn))
             
-    if messages:
-        with tqdm(total=total_messages % 1000, desc='Inserting remaining messages') as pbar2:
+    if dreams:
+        with tqdm(total=total_dreams % 1000, desc='Inserting remaining dreams') as pbar2:
             conn = sqlite3.connect('messages.db')
             c = conn.cursor()
-            for value in messages:
+            for value in dreams:
                 id = value['id']
                 author = value['author']['username']
                 content = value['content']
                 timestamp = value['timestamp']
-                c.execute('INSERT OR IGNORE INTO messages VALUES (?, ?, ?, ?)', (id, author, content, timestamp))
+                c.execute('INSERT OR IGNORE INTO dreams VALUES (?, ?, ?, ?)', (id, author, content, timestamp))
                 pbar2.update(1)
             conn.commit()
             conn.close()
-    
+
 create_table()
-retrieve_messages('1011735697486512219')
+retrieve_dreams('1011735697486512219')
