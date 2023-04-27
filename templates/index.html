@@ -7,6 +7,7 @@
             font-size: 36px;
             font-weight: bold;
             margin-top: 20px;
+            padding-top: 20px;
         }
         .dice {
             display: inline-block;
@@ -17,25 +18,15 @@
             text-align: center;
             font-size: 50px;
             line-height: 80px;
+            margin-right: 20px;
         }
     </style>
 </head>
 
-
-
-  <body>
-    
-  </body>
-</html>
-
-
-
-
-
 <body>
     <h1>Operation Mindfuck</h1>
 
-    <h3> D20 sideproject </h3>
+    <h3>D20 sideproject</h3>
     <div class="dice">20</div>
     <script>
       // Function to roll a D20 dice and update the dice face
@@ -50,7 +41,7 @@
       dice.addEventListener("click", rollDice);
     </script>
 
-    <h4>D20 testing area </h4>
+    <h4>D20 testing area</h4>
     <div id="image-container">
       <img id="image" src="{{ url_for('static', filename='d201.png') }}" alt="Image">
     </div>
@@ -86,6 +77,7 @@
             var seconds = 60;
             var countdownElement = document.getElementById("countdown");
             var countdownInterval = setInterval(function() {
+
                 countdownElement.innerHTML = "<span id='countdown-title'>Time left: </span>" + seconds;
                 seconds -= 1;
                 if (seconds < 0) {

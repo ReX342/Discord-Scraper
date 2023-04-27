@@ -142,11 +142,11 @@ app.jinja_env.filters['split'] = split_filter
 
 # Function to get dreams from database
 def get_dreams():
-    conn = sqlite3.connect('messages.db')
-    cursor = conn.execute("SELECT content FROM dreams")
-    dreams = [row[0] for row in cursor.fetchall()]
-    conn.close()
+    with sqlite3.connect('messages.db') as conn:
+        cursor = conn.execute("SELECT content FROM dreams")
+        dreams = [row[0] for row in cursor.fetchall()]
     return dreams
+
 
 @app.route('/dreams')
 def dreams():
@@ -161,6 +161,7 @@ def dreams():
     #remaining_time = countdown()
     remaining_time = 60
     return render_template('dreams.html', dreams=dreams, urls_dict=urls_dict, yt_url=yt_url, remaining_time=remaining_time)
+
 
 # Route for random dreams page
 @app.route('/random_dreams')
