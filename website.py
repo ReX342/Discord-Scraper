@@ -6,7 +6,6 @@ import sqlite3
 from urllib.parse import urlparse
 from functools import wraps
 import time
-from PIL import Image
 import requests
 import io
 
@@ -27,11 +26,6 @@ def pictures():
     attachments = c.fetchall()
     conn.close()
     return render_template('pictures.html', attachments=attachments)
-
-# Loop through the attachments and download each image
-def download_image(url):
-    response = requests.get(url)
-    return Image.open(io.BytesIO(response.content))
 
 def timeit(func):
     @wraps(func)
