@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Discord Messagez</title>
+    <title>My Dreams</title>
     <style>
         #countdown {
             font-size: 36px;
@@ -12,13 +12,7 @@
 </head>
 
 <body>
-    <h1>Operation Mindfuck</h1>
-    <h2>Links</h2>
-    <ul>
-        <li><a href="{{ url_for('random_dreams') }}">Dreams</a></li>
-        <li><a href="{{ url_for('yt') }}">YouTube</a></li>
-        <li><a href="{{ url_for('dreams') }}">Chronological Dreams for Dissasociated Teens</a></li>
-    </ul>
+    <h1>My Dreams</h1>
 
     <h2>Countdown</h2>
     <div id="countdown">
@@ -45,16 +39,13 @@
     </script>
 
     <hr>
-    <h2>Messages</h2>
+    <h2>Dreams</h2>
     <ul>
-        {% for message in messages %}
-            <li>{{ message }}</li>
+        {% for dream in dreams %}
+            <li>{{ dream }}</li>
         {% endfor %}
     </ul>
-    {% if yt_url %}
-    <hr>
-    <iframe width="560" height="315" src="{{ yt_url }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    {% endif %}
+    
     <hr>
     <h2>Links</h2>
     {% for domain, urls in urls_dict.items() %}

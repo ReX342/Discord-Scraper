@@ -116,6 +116,45 @@ def split_filter(s="", delimiter=","):
 
 app.jinja_env.filters['split'] = split_filter
 
+# Function to get dreams from database
+def get_dreams():
+    conn = sqlite3.connect('messages.db')
+    cursor = conn.execute("SELECT content FROM dreams")
+    dreams = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return dreams
+
+@app.route('/dreams')
+def dreams():
+    # Call the countdown function in a separate thread
+    timer_thread = threading.Thread(target=countdown)
+    timer_thread.start()
+
+    yt_url = get_youtube_video_url()
+    dreams = get_dreams()
+    urls_dict = get_urls()
+    # Get remaining time from countdown function
+    #remaining_time = countdown()
+    remaining_time = 60
+    return render_template('dreams.html', dreams=dreams, urls_dict=urls_dict, yt_url=yt_url, remaining_time=remaining_time)
+
+# Route for random dreams page
+@app.route('/random_dreams')
+def random_dreams():
+    dreams = get_random_dreams(20)
+    urls_dict = get_urls()
+    return render_template('random_dreams.html', dreams=dreams, urls_dict=urls_dict)
+
+
+# Function to get a specified number of random dreams from the database
+def get_random_dreams(num_dreams):
+    conn = sqlite3.connect('messages.db')
+    cursor = conn.execute("SELECT content FROM dreams ORDER BY RANDOM() LIMIT ?", (num_dreams,))
+    dreams = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return dreams
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
