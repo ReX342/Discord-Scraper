@@ -10,9 +10,15 @@ from PIL import Image
 import requests
 import io
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
-#trying this out:
+#D20
+
+@app.route('/d20')
+def d20():
+    return render_template('d20.html')
+
+#Picture feature
 @app.route('/pictures')
 def pictures():
     conn = sqlite3.connect('tf.db')

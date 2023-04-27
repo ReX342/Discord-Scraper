@@ -8,11 +8,64 @@
             font-weight: bold;
             margin-top: 20px;
         }
+        .dice {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            border: 1px solid black;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 50px;
+            line-height: 80px;
+        }
     </style>
 </head>
 
+
+
+  <body>
+    
+  </body>
+</html>
+
+
+
+
+
 <body>
     <h1>Operation Mindfuck</h1>
+
+    <h3> D20 sideproject </h3>
+    <div class="dice">20</div>
+    <script>
+      // Function to roll a D20 dice and update the dice face
+      function rollDice() {
+        var dice = document.querySelector(".dice");
+        var result = Math.floor(Math.random() * 20) + 1;
+        dice.innerText = result;
+      }
+      
+      // Call the rollDice function when the dice is clicked
+      var dice = document.querySelector(".dice");
+      dice.addEventListener("click", rollDice);
+    </script>
+
+    <h4>D20 testing area </h4>
+    <div id="image-container">
+      <img id="image" src="{{ url_for('static', filename='d201.png') }}" alt="Image">
+    </div>
+    <script>
+      var images = ['d201.png', 'd202.png', 'd203.png'];
+      var index = 0;
+      var intervalId = setInterval(function() {
+        index = (index + 1) % images.length;
+        var imageUrl = "{{ url_for('static', filename='" + images[index] + "') }}";
+        document.getElementById('image').src = imageUrl;
+      }, 3000); // Change 3000 to the number of milliseconds you want to wait between image changes
+    </script>
+
+    
+    
     <h2>Links</h2>
     <ul>
         <li><a href="{{ url_for('random_dreams') }}">Dreams</a></li>
@@ -67,11 +120,6 @@
         </ul>
     {% endfor %}
 
-    <h3> D20 sideproject </h3>
-    <video width="560" height="315" autoplay>
-    <source src="d20roll.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-    </video>
-
+ 
 </body>
 </html>
