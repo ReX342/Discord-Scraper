@@ -6,8 +6,7 @@ import sqlite3
 from urllib.parse import urlparse
 from functools import wraps
 import time
-import requests
-import io
+
 
 app = Flask(__name__, static_url_path='/static')
 
