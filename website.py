@@ -1,4 +1,3 @@
-from flask import Flask, render_template
 from countdown import countdown
 import threading
 import random
@@ -6,6 +5,9 @@ import sqlite3
 from urllib.parse import urlparse
 from functools import wraps
 import time
+import random
+from flask import Flask, render_template, request, redirect, url_for, jsonify, make_response
+
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -80,7 +82,16 @@ def index():
     # Get remaining time from countdown function
     #remaining_time = countdown()
     remaining_time = 60
-    return render_template('index.html', messages=messages, urls_dict=urls_dict, yt_url=yt_url, remaining_time=remaining_time)
+    
+    #random attachment
+    conn = sqlite3.connect('tf.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM attachments ORDER BY RANDOM() LIMIT 1')
+    attachments = c.fetchall()
+    conn.close()
+    random_attachment = attachments
+
+    return render_template('index.html', messages=messages, urls_dict=urls_dict, yt_url=yt_url, remaining_time=remaining_time, random_attachment=random_attachment, attachments=attachments)
 
 # Route for comments page
 @app.route('/comments')
