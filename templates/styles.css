@@ -1,0 +1,126 @@
+/* Set the default font family */
+body {
+  font-family: sans-serif;
+}
+
+/* Set the default background and font color */
+body {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Change the background and font color for morning */
+@media (min-width: 768px) and (max-width: 991px) {
+  body[data-theme="morning"] {
+    background-color: #BFD7EA;
+    color: #2F4F4F;
+  }
+}
+
+@media (min-width: 992px) {
+  body[data-theme="morning"] {
+    background-color: #BFD7EA;
+    color: #2F4F4F;
+  }
+}
+
+/* Change the background and font color for afternoon */
+@media (min-width: 768px) and (max-width: 991px) {
+  body[data-theme="afternoon"] {
+    background-color: #D5F5E3;
+    color: #006400;
+  }
+}
+
+@media (min-width: 992px) {
+  body[data-theme="afternoon"] {
+    background-color: #D5F5E3;
+    color: #006400;
+  }
+}
+
+/* Dark mode */
+body[data-theme="dark"] {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+#toggle-dark-theme-label {
+  cursor: pointer;
+}
+
+#countdown {
+  font-size: 36px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+/* Morning styles */
+@media (min-width: 768px) and (max-width: 991px) {
+  body[data-theme="light"].morning,
+  body[data-theme="light"].morning * {
+    background-color: #BFD7EA;
+    color: #2F4F4F;
+  }
+}
+
+@media (min-width: 992px) {
+  body[data-theme="light"].morning,
+  body[data-theme="light"].morning * {
+    background-color: #BFD7EA;
+    color: #2F4F4F;
+  }
+}
+
+/* Afternoon styles */
+@media (min-width: 768px) and (max-width: 991px) {
+  body[data-theme="light"].afternoon,
+  body[data-theme="light"].afternoon * {
+    background-color: #D5F5E3;
+    color: #006400;
+  }
+}
+
+@media (min-width: 992px) {
+  body[data-theme="light"].afternoon,
+  body[data-theme="light"].afternoon * {
+    background-color: #D5F5E3;
+    color: #006400;
+  }
+}
+
+/* Dark mode morning styles */
+@media (min-width: 768px) and (max-width: 991px) {
+  body[data-theme="dark"].morning,
+  body[data-theme="dark"].morning * {
+    background-color: #4a4a4a;
+    color: #ffffff;
+  }
+}
+
+@media (min-width: 992px) {
+  body[data-theme="dark"].morning,
+  body[data-theme="dark"].morning * {
+    background-color: #4a4a4a;
+    color: #ffffff;
+  }
+}
+
+/* Dark mode afternoon styles */
+@media (min-width: 768px) and (max-width: 991px) {
+  body[data-theme="dark"].afternoon,
+  body[data-theme="dark"].afternoon * {
+    background-color: #2e2e2e;
+   
+
+    color: #ffffff;
+  }
+}
+
+@media (min-width: 992px) {
+  body[data-theme="dark"].afternoon,
+  body[data-theme="dark"].afternoon * {
+    background-color: #2e2e2e;
+    color: #ffffff;
+  }
+}
