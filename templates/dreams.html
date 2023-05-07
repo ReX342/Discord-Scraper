@@ -2,17 +2,14 @@
 <html>
 <head>
     <title>My Dreams</title>
-    <style>
-        #countdown {
-            font-size: 36px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body data-theme="light">
     <h1>My Dreams</h1>
+
+    <input type="checkbox" id="toggle-dark-theme">
+    <label for="toggle-dark-theme" id="toggle-dark-theme-label">Toggle dark theme</label>
 
     <h2>Countdown</h2>
     <div id="countdown">
@@ -20,23 +17,7 @@
         <span id="countdown-time">{{ remaining_time }}</span>
     </div>
     
-
-    <script>
-        function startCountdown() {
-            var seconds = 60;
-            var countdownElement = document.getElementById("countdown");
-            var countdownInterval = setInterval(function() {
-                countdownElement.innerHTML = "<span id='countdown-title'>Time left: </span>" + seconds;
-                seconds -= 1;
-                if (seconds < 0) {
-                    clearInterval(countdownInterval);
-                    location.reload();
-                }
-            }, 1000);
-        }
-
-        startCountdown();
-    </script>
+    <script src="main.js"></script>
 
     <hr>
     <h2>Dreams</h2>
@@ -62,6 +43,5 @@
     <source src="d20roll.mp4" type="video/mp4">
     Your browser does not support the video tag.
     </video>
-
 </body>
 </html>
