@@ -23,7 +23,7 @@ def d20():
 def pictures():
     conn = sqlite3.connect('tf.db')
     c = conn.cursor()
-    c.execute('SELECT * FROM attachments ORDER BY RANDOM() LIMIT 20')
+    c.execute('SELECT * FROM attachments ORDER BY RANDOM() LIMIT 342')
     attachments = c.fetchall()
     conn.close()
     return render_template('pictures.html', attachments=attachments)
