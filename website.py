@@ -154,10 +154,6 @@ def get_dreams():
 
 @app.route('/dreams')
 def dreams():
-    # Call the countdown function in a separate thread
-    timer_thread = threading.Thread(target=countdown)
-    timer_thread.start()
-
     yt_url = get_youtube_video_url()
     dreams = get_dreams()
     urls_dict = get_urls()
