@@ -41,3 +41,22 @@ function startCountdown() {
 }
 
 startCountdown();
+
+// Set default theme to afternoon if current time is between 12 and 18
+let currentHour = new Date().getHours();
+if (currentHour >= 12 && currentHour < 18) {
+  document.body.setAttribute("data-theme", "afternoon");
+}
+
+
+var date = new Date();
+var hour = date.getHours();
+
+if (hour >= 12 && hour < 18) {
+    document.documentElement.setAttribute("data-theme", "afternoon");
+} else if (hour >= 18 || hour < 6) {
+    document.documentElement.setAttribute("data-theme", "dark");
+} else {
+    document.documentElement.setAttribute("data-theme", "morning");
+}
+

@@ -124,3 +124,40 @@ body[data-theme="dark"] {
     color: #ffffff;
   }
 }
+/* Style the radio buttons */
+input[type="radio"] {
+    display: none;
+}
+
+/* Style the labels */
+label {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+/* Style the selected label */
+input[type="radio"]:checked + label {
+    background-color: #ccc;
+}
+
+/* Styles for morning theme */
+[data-theme="morning"] {
+  background-color: #F7DC6F; /* Yellow */
+  color: #34495E; /* Dark blue */
+}
+
+/* Example styles for other themes */
+[data-theme="afternoon"] {
+  background-color: #3498DB; /* Blue */
+  color: #FFFFFF; /* White */
+}
+
+[data-theme="dark"] {
+  background-color: #34495E; /* Dark blue */
+  color: #FFFFFF; /* White */
+}
